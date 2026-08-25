@@ -64,7 +64,7 @@ namespace api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var comment = await _commentRepo.UpdateAsync(id, updateDto.ToCommentFromUpdate());
+            var comment = await _commentRepo.UpdateAsync(id, updateDto);
 
             if(comment == null) return NotFound("Comment not Found");
 
@@ -81,7 +81,7 @@ namespace api.Controllers
 
             if (commentModel == null) return NotFound("Comment not Found");
 
-            return Ok(commentModel);
+            return NoContent();
         }
     } 
 }

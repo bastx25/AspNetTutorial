@@ -1,4 +1,6 @@
 ﻿using api.Data;
+using api.Dtos.Comment;
+using api.Dtos.Stock;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -23,16 +25,17 @@ namespace api.Repository
             return commentModel;
         }
 
-        public async Task<Comment> DeleteAsync(int id)
+        public async Task<Comment?> DeleteAsync(int id)
         {
-            var comment = await _context.Comments.FirstOrDefaultAsync(x => x.Id == id);
+            var commentModel = await _context.Comments.FirstOrDefaultAsync(x => x.Id == id);
 
-            if (comment == null) return null;
+            if (commentModel == null) return null;
 
-            _context.Comments.Remove(comment);
+            _context.Comments.Remove(commentModel);
+
             await _context.SaveChangesAsync();
 
-            return comment;
+            return commentModel;
         }
 
         public async Task<List<Comment>> GetAllAsync()
@@ -45,7 +48,7 @@ namespace api.Repository
             return await _context.Comments.FindAsync(id);
         }
 
-        public async Task<Comment?> UpdateAsync(int id, Comment commentModel)
+        public async Task<Comment?> UpdateAsync(int id, UpdateCommentRequestDto commentModel)
         {
             var existingComment = await _context.Comments.FindAsync(id);
 
