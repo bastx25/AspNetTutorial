@@ -2,6 +2,7 @@
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 
 namespace api.Controllers
@@ -49,6 +50,28 @@ namespace api.Controllers
             await _commentRepo.CreateAsync(commentModel);
 
             return CreatedAtAction(nameof(GetById), new { id = commentModel.Id }, commentModel.ToCommentDto());
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentRequestDto updateDto)
+        {
+            var comment = await _commentRepo.UpdateAsync(id, updateDto.ToCommentFromUpdate());
+
+            if(comment == null) return NotFound("Comment not Found");
+
+            return Ok(comment.ToCommentDto());
+        }
+
+        [HttpDelete]
+        [Route ("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var commentModel = await _commentRepo.DeleteAsync(id);
+
+            if (commentModel == null) return NotFound("Comment not Found");
+
+            return Ok(commentModel);
         }
     } 
 }
